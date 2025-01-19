@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Products</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Add your CSS file -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("images/background.jpg");
+            background-size: cover; /* Cover the entire background */
+            background-repeat: no-repeat; /* Prevent repetition */
+            background-position: center; /* Center the image */
+            background-attachment: fixed; /* Fix the background during scrolling */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.5s ease;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a90e2;
+        }
+
+        form {
+            opacity: 20%;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #357ab8;
+        }
+
+        #result-container {
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        #compare-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .compared-product {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            flex: 1 1 calc(30% - 20px);
+            min-width: 200px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+            transition: transform 0.3s ease;
+        }
+
+        .compared-product img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .compared-product:hover {
+            transform: scale(1.05);
+        }
+
+        button.clear-button {
+            margin-top: 20px;
+            background-color: #e74c3c;
+        }
+
+        button.clear-button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Comparison <i style="color:rgb(255, 255, 255)">[Based on predicted battery life]</i> </h1>
+
+    <form id="recommendation-form">
+        <label for="device_type">Device Type (Phone/Tablet/Smartwatch):</label>
+        <input type="text" id="device_type" name="device_type" required><br><br>
+
+        <!-- <label for="usage_tenure">Usage Tenure (Months):</label>
+        <input type="number" id="usage_tenure" name="usage_tenure" required><br><br> -->
+
+        <label for="battery_life_needed">Battery Life Needed (Hours per Day):</label>
+        <input type="number" id="battery_life_needed" name="battery_life_needed" required>
+        <label for="software performance">Required Software performance: (1-10)</label>
+        <input type="number" id="software_performance" name="software_performance" required>
+        <!-- <label for="rating">required rating(1-10):</label>
+        <input type="number" id="rating" name="rating" required> -->
+        <br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="result-container">
+        <h2>Recommended Device</h2>
+        <p id="recommended-device"></p>
+        <h3>Battery Life Comparison</h3>
+        <img id="battery-plot" src="" alt="Battery Life Comparison" style="display:none;">
+        <h3>Software Performance Comparison</h3>
+        <img id="software-plot" src="" alt="Software Performance Comparison" style="display:none;">
+    </div>
+
+
+    <div id="compare-container"></div>
+    <button onclick="clearCompareList()">Clear Comparison List</button>
+
+    <script>
+        // Retrieve the compareList from localStorage
+        const compareList = JSON.parse(localStorage.getItem('compareList')) || [];
+        const compareContainer = document.getElementById('compare-container');
+
+        // Function to display products in the compare container
+        function displayComparedProducts() {
+            if (compareList.length === 0) {
+                compareContainer.innerHTML = '<p>No products selected for comparison.</p>';
+                return;
+            }
+            compareList.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'compared-product';
+                productDiv.innerHTML = `
+                    <img src="${product.image}" alt="${product.title}">
+                    <h3>${product.title}</h3>
+                `;
+                compareContainer.appendChild(productDiv);
+            });
+        }
+
+        // Function to clear the compare list
+        function clearCompareList() {
+            // Clear the compareList from localStorage
+            localStorage.removeItem('compareList');
+            // Clear the displayed products in the compare container
+            compareContainer.innerHTML = '<p>No products selected for comparison.</p>';
+        }
+
+        // Display the products when the page loads
+        displayComparedProducts();
+
+        const form = document.getElementById('recommendation-form');
+        const resultContainer = document.getElementById('result-container');
+        const recommendedDeviceElement = document.getElementById('recommended-device');
+        const batteryPlot = document.getElementById('battery-plot');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent page reload
+
+            const formData = {
+                device_type: document.getElementById('device_type').value,
+                // usage_tenure: document.getElementById('usage_tenure').value,
+                battery_life_needed: document.getElementById('battery_life_needed').value,
+                // rating: document.getElementById('rating').value,
+                software_performance: document.getElementById('battery_life_needed').value,
+                compare_list: compareList // Include compare list in the request
+            };
+
+            console.log('Form Data:', formData); // Debug information
+
+            // Send the form data to the backend via AJAX
+            fetch('http://127.0.0.1:5000/recommend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display the recommended device
+                document.getElementById('recommended-device').textContent =
+                    `Recommended: ${data.recommended_device.Device} Device as Predicted battery is more closer to the input`;
+
+                document.getElementById('battery-plot').src = `/${data.battery_plot_path}`;
+                document.getElementById('battery-plot').style.display = 'block';
+
+                document.getElementById('software-plot').src = `/${data.software_plot_path}`;
+                document.getElementById('software-plot').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                recommendedDeviceElement.innerHTML = 'An error occurred while fetching the recommendation.';
+            });
+        });
+    </script>
+</body>
+</html>

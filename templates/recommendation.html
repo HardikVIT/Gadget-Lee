@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Recommendations - Gadgetlee</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <style>
+        /* Custom Styles for Recommendation Page */
+        body {
+            font-family: 'Roboto', Calibri, Arial, sans-serif;
+            color: #E5E5E5;
+            background-image: url("images/background.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 2em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #76C7C0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 2em;
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-group {
+            margin: 1em 0;
+            text-align: center;
+        }
+
+        .form-group input[type="text"], .form-group select {
+            padding: 10px;
+            width: 80%;
+            border-radius: 5px;
+            border: 1px solid #333;
+            background: #2E2E2E;
+            color: white;
+        }
+
+        .form-group button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background: #76C7C0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background: #64B5B0;
+        }
+
+        .product {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 5px;
+        }
+
+        .back-button {
+            display: block;
+            width: 200px;
+            margin: 2em auto;
+            padding: 10px;
+            background: #76C7C0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #64B5B0;
+        }
+
+        /* Custom Checkbox Styles */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #76C7C0;
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            outline: none;
+            margin-right: 10px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked {
+            background: #76C7C0;
+            border-color: #76C7C0;
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked::before {
+            content: '\f00c'; /* FontAwesome check icon */
+            font-family: 'FontAwesome';
+            font-size: 18px;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .checkbox-wrapper label {
+            color: #E5E5E5;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        /* Hidden by default */
+        .price-range-checkboxes {
+            display: none;
+            text-align: left;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Product Recommendations</h1>
+
+        <div class="form-group">
+            <label for="productType">Type of Product:</label><br>
+            <select id="productType">
+                <option value="phone">phone</option>
+                <option value="Tablet">Tablet</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Smartwatch">Smartwatch</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="brand">Brand:</label><br>
+            <input type="text" id="brand" placeholder="e.g., Lloyd, Samsung, etc.">
+        </div>
+
+        <div class="form-group">
+            <button onclick="togglePriceRange()">Toggle Price Range</button>
+        </div>
+
+        <div class="form-group price-range-checkboxes">
+            <label>Price Range:</label><br>
+            <div class="checkbox-wrapper">
+                <input type="checkbox" value="0-499" id="price-0-499">
+                <label for="price-0-499">$0 - $499</label>
+            </div>
+            <div class="checkbox-wrapper">
+                <input type="checkbox" value="500-699" id="price-500-699">
+                <label for="price-500-699">$500 - $699</label>
+            </div>
+            <div class="checkbox-wrapper">
+                <input type="checkbox" value="700-949" id="price-700-949">
+                <label for="price-700-949">$700 - $949</label>
+            </div>
+            <div class="checkbox-wrapper">
+                <input type="checkbox" value="950-1299" id="price-950-1299">
+                <label for="price-950-1299">$950 - $1299</label>
+            </div>
+            <div class="checkbox-wrapper">
+                <input type="checkbox" value="1300+" id="price-1300+">
+                <label for="price-1300+">$1300+</label>
+            </div>
+        </div>
+
+        <h2>Recommended Products</h2>
+        <div id="recommendations"></div>
+
+        <button class="back-button" onclick="window.location.href='index.html'">Go to Home</button>
+    </div>
+
+    <script>
+        // Toggle price range visibility
+        function togglePriceRange() {
+            const priceRangeDiv = document.querySelector('.price-range-checkboxes');
+            priceRangeDiv.style.display = priceRangeDiv.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Event listeners for input changes
+        document.getElementById('productType').addEventListener('change', getRecommendations);
+        document.getElementById('brand').addEventListener('input', getRecommendations);
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', getRecommendations);
+        });
+
+        async function getRecommendations() {
+            const productType = document.getElementById('productType').value.toLowerCase();
+            const brand = document.getElementById('brand').value.toLowerCase();
+            const priceRanges = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+
+            const recommendationsDiv = document.getElementById('recommendations');
+            recommendationsDiv.innerHTML = ''; // Clear previous recommendations
+
+            try {
+                const response = await fetch('products.csv');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                const csvText = await response.text();
+                const products = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
+
+                let recommendations = products.filter(item => {
+                    let matches = true;
+
+                    if (item.sub_category) {
+                        matches = item.sub_category.toLowerCase() === productType;
+                    } else {
+                        matches = false;
+                    }
+
+                    if (brand) {
+                        matches = matches && item.name.toLowerCase().includes(brand);
+                    }
+
+                    if (priceRanges.length > 0) {
+                        const discountPrice = parseInt(item.discount_price.replace(/[₹,]/g, ''), 10);
+                        matches = matches && priceRanges.some(range => {
+                            const [min, max] = range.split('-').map(Number);
+                            if (!isNaN(min)) {
+                                return isNaN(max) ? discountPrice >= min : discountPrice >= min && discountPrice <= max;
+                            }
+                            return false;
+                        });
+                    }
+
+                    return matches;
+                });
+
+                if (recommendations.length > 0) {
+                    recommendations.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'product';
+                        div.innerHTML = `<div class="product-name">${item.name}</div><div class="product-price">Discount Price: $${item.discount_price} | Actual Price: ₹${item.actual_price}</div>`;
+                        recommendationsDiv.appendChild(div);
+                    });
+                } else {
+                    recommendationsDiv.innerHTML = `<p>No recommendations available for your criteria.</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching or processing CSV:', error);
+                recommendationsDiv.innerHTML = `<p>Error fetching recommendations. Please try again later.</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

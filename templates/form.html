@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tech Product Recommendation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; }
+        form { max-width: 500px; margin: auto; }
+        label { display: block; margin-top: 15px; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; }
+        button { margin-top: 20px; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>Find Your Tech Product</h1>
+    <form action="/recommend" method="post">
+        <label for="brand">Brand:</label>
+        <input type="text" id="brand" name="brand" placeholder="e.g., Lloyd, LG">
+
+        <label for="category">Main Category:</label>
+        <select id="category" name="category">
+            <option value="">Select Category</option>
+            <option value="appliances">Appliances</option>
+            <!-- Add more categories based on your dataset -->
+        </select>
+
+        <label for="price">Maximum Price (in ₹):</label>
+        <input type="number" id="price" name="price" min="0" placeholder="e.g., 50000">
+
+        <button type="submit">Get Recommendations</button>
+    </form>
+</body>
+</html>

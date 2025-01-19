@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', Calibri, Arial, sans-serif;
+            color: #E5E5E5;
+            background: #0F0F0F;
+            padding: 2em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .contact-header {
+            text-align: center;
+        }
+        .contact-form {
+            background: #1A1A1A;
+            padding: 2em;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 600px;
+            margin: 1em 0;
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 1em;
+            margin: 0.5em 0;
+            border: none;
+            border-radius: 5px;
+        }
+        .contact-form button {
+            background: #76C7C0;
+            color: white;
+            padding: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .contact-form button:hover {
+            background: #64B3B1;
+        }
+        .contact-info {
+            margin-top: 1em;
+            text-align: center;
+        }
+        .go-back-button {
+            background: #E74C3C;
+            color: white;
+            padding: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1em;
+        }
+        .go-back-button:hover {
+            background: #C0392B;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contact-header">
+        <h1>Contact Us</h1>
+        <p>We value your feedback and suggestions!</p>
+    </div>
+    
+    <div class="contact-form">
+        <form onsubmit="return sendEmail()">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="email" id="email" placeholder="Your Email" required>
+            <input type="text" id="phone" placeholder="Your Phone Number" required>
+            <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
+            <button type="submit">Send Feedback</button>
+        </form>
+    </div>
+
+    <div class="contact-info">
+        <h2>Contact Information</h2>
+        <p>Email: <a href="mailto:sondhihardik@gmail.com" style="color: #76C7C0;">sondhihardik@gmail.com</a></p>
+        <p>Phone: 720 624 ****</p>
+    </div>
+
+    <button class="go-back-button" onclick="window.location.href='index.html'">Go Back to Home</button>
+
+    <script>
+        function sendEmail() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+
+            const subject = 'Feedback from ' + name;
+            const body = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`;
+            window.location.href = `mailto:sondhihardik@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            return false; // Prevent form submission
+        }
+    </script>
+
+</body>
+</html>

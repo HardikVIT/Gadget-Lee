@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blueprint: Product Comparison Layout &amp; Effect</title>
+    <meta name="description" content="Blueprint: A basic responsive product grid layout with comparison functionality" />
+    <meta name="keywords" content="blueprint, template, html, css, javascript, grid, layout, effect, product comparison" />
+    <meta name="author" content="Codrops" />
+    <link rel="shortcut icon" href="favicon.ico">
+	<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/demo.css" />
+    <link rel="stylesheet" type="text/css" href="css/component.css" />
+    <!-- Modernizr is used for flexbox fallback -->
+    <script src="js/modernizr.custom.js"></script>
+    <style>
+        /* Custom Styles for Sidebar */
+        body {
+            font-family: 'Roboto', Calibri, Arial, sans-serif;
+            color: #E5E5E5;
+            background-image: url("images/background.jpg"); /* Set your background image */
+            background-size: cover; /* Cover the entire background */
+            background-repeat: no-repeat; /* Prevent repetition */
+            background-position: center; /* Center the image */
+            background-attachment: fixed; /* Fix the background during scrolling */
+            padding: 2em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh; /* Ensure the body covers the full viewport height */
+        }
+        .gadget-header {
+            color: #ffffff; /* Bright blue color */
+            font-family: 'Orbitron', sans-serif; /* Techy font */
+            font-size: 3em; /* Larger font size */
+            cursor: pointer;
+            text-align: center; /* Center the text */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Optional shadow for depth */
+            transition: transform 0.3s ease; /* Smooth hover effect */
+        }
+
+        .gadget-header:hover {
+            transform: translateY(-5px); /* Slightly lift the text on hover */
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .gadget-header {
+            display: inline-block;
+            animation: wave 1s ease-in-out infinite; /* Apply wavy animation */
+        }
+
+        .sidebar {
+            width: 250px; /* Fixed width for sidebar */
+            background: #000000;
+            padding: 2em 1em;
+            height: 100vh; /* Full height */
+            position: fixed; /* Fixed position */
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar-title {
+            font-size: 1.5em;
+            color: #76C7C0;
+            margin-bottom: 1em;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin: 1em 0;
+        }
+
+        .nav-links a {
+            color: #E5E5E5;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            display: block;
+            transition: background 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: #76C7C0; /* Light teal accent on hover */
+        }
+
+        .view {
+            margin-left: 260px; /* Leave space for the sidebar */
+            padding: 2em; /* Add padding to the view */
+            flex: 1; /* Take up remaining space */
+        }
+
+        .bp-header {
+            text-align: center;
+        }
+		.product {
+			background-color: transparent; /* Keep the background invisible */
+			border: 10px solid rgba(0, 0, 0, 0.4); /* 1px thin border with 60% opacity (0.4 in rgba) */
+			box-shadow: none; /* Optional: Remove any shadow */
+		}
+        /* Chatbot iframe */
+        .chatbot {
+            display: none; /* Hidden by default */
+            z-index: 1000; /* Ensures it stays above other elements */
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            position: absolute; /* Absolute position */
+			top: 0;
+			bottom: 0;/* Position it at the top */
+            left: 0; /* Position it on the left */
+            background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+        }
+
+        .iframe-container {
+            width: 250px; /* Match the sidebar width */
+            height: 430px; /* Fixed height */
+            position: fixed; /* Absolute positioning */ /* Align with navbar */
+			bottom: 0;
+			top: 0;
+            left: 0; /* Align with sidebar */
+            display: none; /* Hidden by default */
+            z-index: 1001; /* Ensures it stays above other elements */
+        }
+			
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <!-- Sidebar -->
+	<!-- Sidebar -->
+	<nav class="sidebar" style="width: 250px; height: 100vh; background: #000000; padding: 2em 1em; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; justify-content: space-between;">
+		<ul class="nav-links" style="list-style: none; padding: 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; margin: 0;">
+			<li style="margin: 1em 0;">
+				<a href="index.html" class="bp-icon bp-icon-next" style="color: #E5E5E5; font-size: 1.5em; font-family: 'Orbitron', sans-serif; font-weight: bold; padding: 0.5em 1em; border-radius: 5px; display: block; transition: background 0.3s ease; text-decoration: none;">Home</a>
+			</li>
+			<li style="margin: 1em 0;">
+				<a href="recommendation.html" class="bp-icon bp-icon-drop" style="color: #E5E5E5; font-size: 1.5em; font-family: 'Orbitron', sans-serif; font-weight: bold; padding: 0.5em 1em; border-radius: 5px; display: block; transition: background 0.3s ease; text-decoration: none;">Recommended</a>
+			</li>
+			<li style="margin: 1em 0;">
+				<a href="cart.html" class="bp-icon bp-icon-drop" style="color: #E5E5E5; font-size: 1.5em; font-family: 'Orbitron', sans-serif; font-weight: bold; padding: 0.5em 1em; border-radius: 5px; display: block; transition: background 0.3s ease; text-decoration: none;">Cart</a>
+			</li>
+			<li style="margin: 1em 0;">
+				<a href="support.html" class="bp-icon bp-icon-archive" style="color: #E5E5E5; font-size: 1.5em; font-family: 'Orbitron', sans-serif; font-weight: bold; padding: 0.5em 1em; border-radius: 5px; display: block; transition: background 0.3s ease; text-decoration: none;">Support</a>
+			</li>
+			<li style="margin: 1em 0;">
+				<a href="about.html" class="bp-icon bp-icon-about" style="color: #E5E5E5; font-size: 1.5em; font-family: 'Orbitron', sans-serif; font-weight: bold; padding: 0.5em 1em; border-radius: 5px; display: block; transition: background 0.3s ease; text-decoration: none;">About Us</a>
+			</li>
+			<li style="margin: 1em 0;">
+				<a href="Contact.html" class="bp-icon bp-icon-prev" style="color: #E5E5E5; font-size: 1.5em; font-family: 'Orbitron', sans-serif; font-weight: bold; padding: 0.5em 1em; border-radius: 5px; display: block; transition: background 0.3s ease; text-decoration: none;">Contact</a>
+			</li>
+		</ul>
+	</nav>
+
+    <!-- Main view -->
+    <div class="view">
+        <!-- Blueprint header -->
+        <header class="bp-header cf">
+			<h1 class="gadget-header" onclick="toggleChatbot()">Gadget-Lee</h1>
+        </header>
+        <!-- Product grid -->
+		<h1 align="center">
+			<button onclick="goToComparePage()" style="
+				opacity: 60%;
+				background-color: #2c2929; /* Green background */
+				color: rgb(255, 255, 255); /* White text */
+				font-size: 18px; /* Font size */
+				padding: 12px 24px; /* Padding for the button */
+				border: none; /* Remove default border */
+				border-radius: 8px; /* Rounded corners */
+				cursor: pointer; /* Pointer cursor on hover */
+				box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+				transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+			" onmouseover="this.style.backgroundColor='#45a049'; this.style.boxShadow='0px 6px 8px rgba(0, 0, 0, 0.3)'" 
+			onmouseout="this.style.backgroundColor='#4CAF50'; this.style.boxShadow='0px 4px 6px rgba(0, 0, 0, 0.2)'">
+				Compare Selected Products
+			</button>
+		</h1>
+		
+		 </h1>
+        <section class="grid">
+            <!-- Products -->
+            <div class="product">
+                <div class="product__info">
+					<img class="product__image" src="images/phone.jpg" alt="Product 1" />
+                    <h3 class="product__title">iPhone 14</h3>
+                    <span class="product__year extra highlight">2021</span>
+                    <span class="product__region extra highlight">USA</span>
+                    <span class="product__varietal extra highlight">Smartphone</span>
+                    <span class="product__alcohol extra highlight">N/A</span>
+                    <span class="product__price highlight">$999.00</span>
+                    <button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span class="action__text">Add to cart</span></button>
+                </div>
+				<label class="action action--compare-add"><input class="check-hidden" type="checkbox" /><i class="fa fa-plus"></i><i class="fa fa-check"></i><span class="action__text action__text--invisible">Add to compare</span></label>
+            </div>
+			<div class="product">
+				<div class="product__info">
+					<img class="product__image" src="images/phone.jpg" alt="Product 8" />
+					<h3 class="product__title">OnePlus 11</h3>
+					<span class="product__year extra highlight">2021</span>
+					<span class="product__region extra highlight">USA</span>
+					<span class="product__varietal extra highlight">Smartphone</span>
+					<span class="product__alcohol extra highlight">N/A</span>
+					<span class="product__price highlight">$599.00</span>
+					<button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span class="action__text">Add to cart</span></button>
+				</div>
+				<label class="action action--compare-add"><input class="check-hidden" type="checkbox" /><i class="fa fa-plus"></i><i class="fa fa-check"></i><span class="action__text action__text--invisible">Add to compare</span></label>
+			</div>
+            <br>
+			<div class="product">
+				<div class="product__info">
+					<img class="product__image" src="images/laptop.png" alt="Product 3" />
+					<h3 class="product__title">MacBook Pro 14"</h3>
+					<span class="product__year extra highlight">2021</span>
+					<span class="product__region extra highlight">USA</span>
+					<span class="product__varietal extra highlight">Laptop</span>
+					<span class="product__alcohol extra highlight">N/A</span>
+					<span class="product__price highlight">$1,999.00</span>
+					<button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span class="action__text">Add to cart</span></button>
+				</div>
+				<label class="action action--compare-add"><input class="check-hidden" type="checkbox" /><i class="fa fa-plus"></i><i class="fa fa-check"></i><span class="action__text action__text--invisible">Add to compare</span></label>
+			</div>
+			<div class="product">
+				<div class="product__info">
+					<img class="product__image" src="images/camera.png" alt="Product 4" />
+					<h3 class="product__title">Sony WH-1000XM4</h3>
+					<span class="product__year extra highlight">2020</span>
+					<span class="product__region extra highlight">Japan</span>
+					<span class="product__varietal extra highlight">Headphones</span>
+					<span class="product__alcohol extra highlight">N/A</span>
+					<span class="product__price highlight">$349.00</span>
+					<button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span class="action__text">Add to cart</span></button>
+				</div>
+				<label class="action action--compare-add"><input class="check-hidden" type="checkbox" /><i class="fa fa-plus"></i><i class="fa fa-check"></i><span class="action__text action__text--invisible">Add to compare</span></label>
+			</div>
+			<div class="product">
+				<div class="product__info">
+					<img class="product__image" src="images/watch.png" alt="Product 5" />
+					<h3 class="product__title">Apple Watch Series 7</h3>
+					<span class="product__year extra highlight">2021</span>
+					<span class="product__region extra highlight">USA</span>
+					<span class="product__varietal extra highlight">Smartwatch</span>
+					<span class="product__alcohol extra highlight">N/A</span>
+					<span class="product__price highlight">$399.00</span>
+					<button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span class="action__text">Add to cart</span></button>
+				</div>
+				<label class="action action--compare-add"><input class="check-hidden" type="checkbox" /><i class="fa fa-plus"></i><i class="fa fa-check"></i><span class="action__text action__text--invisible">Add to compare</span></label>
+			</div>
+			<div class="product">
+				<div class="product__info">
+					<img class="product__image" src="images/laptop.png" alt="Product 6" />
+					<h3 class="product__title">Dell XPS 13</h3>
+					<span class="product__year extra highlight">2021</span>
+					<span class="product__region extra highlight">USA</span>
+					<span class="product__varietal extra highlight">Laptop</span>
+					<span class="product__alcohol extra highlight">N/A</span>
+					<span class="product__price highlight">$1,299.00</span>
+					<button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span class="action__text">Add to cart</span></button>
+				</div>
+				<label class="action action--compare-add"><input class="check-hidden" type="checkbox" /><i class="fa fa-plus"></i><i class="fa fa-check"></i><span class="action__text action__text--invisible">Add to compare</span></label>
+			</div>
+			<div class="product">
+				<div class="product__info">
+					<img class="product__image" src="images/alexa.png" alt="Product 7" />
+					<h3 class="product__title">Amazon Echo Dot (4th Gen)</h3>
+					<span class="product__year extra highlight">2020</span>
+					<span class="product__region extra highlight">USA</span>
+					<span class="product__varietal extra highlight">Smart Speaker</span>
+					<span class="product__alcohol extra highlight">N/A</span>
+					<span class="product__price highlight">$49.99</span>
+					<button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span class="action__text">Add to cart</span></button>
+				</div>
+				<label class="action action--compare-add"><input class="check-hidden" type="checkbox" /><i class="fa fa-plus"></i><i class="fa fa-check"></i><span class="action__text action__text--invisible">Add to compare</span></label>
+			</div>
+			<div class="product">
+				<div class="product__info">
+					<img class="product__image" src="images/laptop.png" alt="Product 9" />
+					<h3 class="product__title">Microsoft Surface Laptop 4</h3>
+					<span class="product__year extra highlight">2021</span>
+					<span class="product__region extra highlight">USA</span>
+					<span class="product__varietal extra highlight">Laptop</span>
+					<span class="product__alcohol extra highlight">N/A</span>
+					<span class="product__price highlight">$999.00</span>
+					<button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span class="action__text">Add to cart</span></button>
+				</div>
+				<label class="action action--compare-add"><input class="check-hidden" type="checkbox" /><i class="fa fa-plus"></i><i class="fa fa-check"></i><span class="action__text action__text--invisible">Add to compare</span></label>
+			</div>
+            <!-- Add more products here -->
+        </section>
+    </div><!-- /view -->
+	<div class="iframe-container" id="chatbot-container">
+        <iframe width="320" height="733" allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/d0fb0ab4-a841-4982-a698-ec5efd699907"></iframe>
+    </div>
+    <script>
+		const cart = JSON.parse(localStorage.getItem('cart')) || [];
+		function toggleChatbot() {
+            var navbar = document.querySelector(".sidebar");
+            var chatbotContainer = document.getElementById("chatbot-container");
+
+            if (chatbotContainer.style.display === "none" || chatbotContainer.style.display === "") {
+                navbar.style.display = "none"; // Hide the navbar
+                chatbotContainer.style.display = "block"; // Show the chatbot iframe
+            } else {
+                navbar.style.display = "block"; // Show the navbar
+                chatbotContainer.style.display = "none"; // Hide the chatbot iframe
+            }
+        }
+		// Function to save product to the cart
+		function saveToCart(product) {
+			const productExists = cart.find(item => item.name === product.name);
+			
+			if (!productExists) {
+				cart.push(product);
+				localStorage.setItem('cart', JSON.stringify(cart));
+				alert(`${product.name} has been added to your cart!`);
+			} else {
+				alert(`${product.name} is already in your cart!`);
+			}
+			
+			// Redirect to cart.html after adding the product
+			window.location.href = 'cart.html';
+		}
+	
+		// Event listener for the "Add to Cart" button
+		document.addEventListener('click', function(event) {
+			if (event.target.matches('.action--buy')) {
+				const productElement = event.target.closest('.product__info');
+				const productTitle = productElement.querySelector('.product__title').innerText;
+				const productPrice = parseFloat(productElement.querySelector('.product__price').innerText.replace('$', ''));
+	
+				const product = {
+					name: productTitle,
+					price: productPrice,
+				};
+	
+				saveToCart(product); // Save product to cart
+			}
+		});
+				// Array to hold products for comparison
+		let compareList = JSON.parse(localStorage.getItem('compareList')) || [];
+
+		// Function to update compareList in localStorage
+		function updateCompareList(product) {
+			const index = compareList.findIndex(item => item.title === product.title);
+			
+			if (index === -1) {
+				// Add to compare list
+				compareList.push(product);
+				console.log(`Added ${product.title} to compare list.`);
+			} else {
+				// Remove from compare list
+				compareList.splice(index, 1);
+				console.log(`Removed ${product.title} from compare list.`);
+			}
+			
+			// Save updated compareList to localStorage
+			localStorage.setItem('compareList', JSON.stringify(compareList));
+		}
+
+		// Function to handle "Add to Compare" checkbox
+		function handleCompareCheckbox(event, productTitle, productImage, productPrice) {
+			const product = {
+				title: productTitle,
+				image: productImage,
+				price: productPrice
+			};
+			
+			// Update the compare list
+			updateCompareList(product);
+		}
+
+		// Event listeners for "Add to Compare" checkboxes
+		document.querySelectorAll('.action--compare-add input[type="checkbox"]').forEach((checkbox) => {
+			checkbox.addEventListener('change', (event) => {
+				const productCard = event.target.closest('.product');
+				
+				// Check if productCard exists
+				if (!productCard) {
+					console.error('Product card not found.');
+					return;
+				}
+
+				const productTitle = productCard.querySelector('.product__title').textContent;
+				const productImage = productCard.querySelector('.product__image').src;
+				const productPrice = productCard.querySelector('.product__price').textContent;
+
+				handleCompareCheckbox(event, productTitle, productImage, productPrice);
+
+				// Update checkbox state based on compareList
+				const productExists = compareList.some(item => item.title === productTitle);
+				event.target.checked = productExists;
+			});
+		});
+
+		// Function to navigate to the comparison page
+		function goToComparePage() {
+			// Check if there are products in the compare list before navigating
+			if (compareList.length === 0) {
+				alert('Please select at least one product to compare.');
+				return;
+			}
+			window.location.href = 'compare.html'; // Make sure this file exists in the same directory
+		}
+
+
+	</script>
+    <script src="js/classie.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

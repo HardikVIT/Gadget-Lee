@@ -1,0 +1,170 @@
+/* General Nvidia Style */
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+@font-face {
+    font-family: 'nvidia-icons';
+    src: url('../fonts/nvidia-icons/nvidia-icons.eot');
+    src: url('../fonts/nvidia-icons/nvidia-icons.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/nvidia-icons/nvidia-icons.woff') format('woff'),
+         url('../fonts/nvidia-icons/nvidia-icons.ttf') format('truetype'),
+         url('../fonts/nvidia-icons/nvidia-icons.svg#nvidia-icons') format('svg');
+}
+
+/* Resets */
+*,
+*:after,
+*:before {
+    box-sizing: border-box;
+}
+
+body,
+html {
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main styles */
+body {
+    font-family: 'Roboto', Calibri, Arial, sans-serif;
+    color: #E5E5E5;
+    background: #000000;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Container for sidebar and header */
+.container {
+    display: flex; /* Use flexbox for layout */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px; /* Fixed width for sidebar */
+    background: #000000;
+    padding: 2em 1em;
+    height: 100vh; /* Full height */
+}
+
+.sidebar-title {
+    font-size: 1.5em;
+    color: #76C7C0;
+    margin-bottom: 1em;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+}
+
+.nav-links li {
+    margin: 1em 0;
+}
+
+.nav-links a {
+    color: #E5E5E5;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    display: block;
+    transition: background 0.3s ease;
+}
+
+.nav-links a:hover {
+    background: #76C7C0; /* Light teal accent on hover */
+}
+
+/* Header */
+.bp-header {
+    flex: 1; /* Take up remaining space */
+    padding: 4em 1.875em 1.875em;
+    text-align: center;
+}
+
+.bp-header h1 {
+    font-size: 2.5em;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 .5em 0;
+}
+
+.bp-header > span {
+    font-weight: 500;
+    font-size: 0.9em;
+    color: #76C7C0;
+    position: relative;
+    z-index: 100;
+    display: block;
+    padding: 0 0 .5em .1em;
+    letter-spacing: .5em;
+    text-transform: uppercase;
+}
+
+/* Product grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5em;
+    padding: 2em 0;
+}
+
+.product {
+    background: #000000;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.product:hover {
+    transform: scale(1.05);
+}
+
+.product__info {
+    padding: 1em;
+    text-align: center;
+}
+
+.product__title {
+    font-weight: 500;
+    font-size: 1.2em;
+    color: #76C7C0;
+}
+
+.product__price {
+    font-weight: bold;
+    color: #FFFFFF;
+    font-size: 1.5em;
+    margin: 0.5em 0;
+}
+
+.action {
+    display: inline-block;
+    margin: 0.5em;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    background: #76C7C0;
+    color: #FFFFFF;
+    transition: background 0.3s ease;
+}
+
+.action:hover {
+    background: #5FB8B0;
+}
+
+/* Media Queries */
+@media screen and (max-width: 40em) {
+    .sidebar {
+        width: 100%; /* Full width on smaller screens */
+        height: auto; /* Auto height */
+    }
+    
+    .bp-header h1 {
+        font-size: 2em;
+    }
+    
+    .product__title {
+        font-size: 1.1em;
+    }
+    
+    .product__price {
+        font-size: 1.3em;
+    }
+}
