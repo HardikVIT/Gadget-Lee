@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compare Products</title>
     <link rel="stylesheet" href="styles.css"> <!-- Add your CSS file -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,22 +20,12 @@
             padding: 20px;
             transition: background-color 0.5s ease;
         }
-
+        
         h1 {
             text-align: center;
             color: #4a90e2;
         }
 
-        form {
-            opacity: 20%;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            opacity: 0;
-            animation: fadeIn 0.5s forwards;
-        }
 
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -74,8 +66,12 @@
         }
 
         #result-container {
-            margin-top: 20px;
-            opacity: 0;
+            background-color: white;
+            border-radius: 2%;
+            position: relative;
+            left: 1%;
+            width: 98.5%;
+            opacity: 10%;
             animation: fadeIn 0.5s forwards;
         }
 
@@ -83,12 +79,12 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .compared-product {
             background-color: #fff;
-            padding: 15px;
+            padding: 10px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             margin: 10px;
@@ -102,7 +98,7 @@
 
         .compared-product img {
             max-width: 100%;
-            height: auto;
+            height: 150px;
             border-radius: 8px;
         }
 
@@ -114,58 +110,132 @@
             margin-top: 20px;
             background-color: #e74c3c;
         }
-
         button.clear-button:hover {
             background-color: #c0392b;
+        }
+        #compare{
+            position: relative;
+            left: 48%;
+        }
+        #compare_2{
+            position: relative;
+            left: 45%;
         }
     </style>
 </head>
 <body>
-    <h1>Product Comparison <i style="color:rgb(255, 255, 255)">[Based on predicted battery life]</i> </h1>
+    <h1><i style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Product Comparison </i></h1>
+    <button onclick="clearCompareList()" id="compare_2">Clear Comparison List</button>
 
-    <form id="recommendation-form">
-        <label for="device_type">Device Type (Phone/Tablet/Smartwatch):</label>
-        <input type="text" id="device_type" name="device_type" required><br><br>
 
-        <!-- <label for="usage_tenure">Usage Tenure (Months):</label>
-        <input type="number" id="usage_tenure" name="usage_tenure" required><br><br> -->
-
-        <label for="battery_life_needed">Battery Life Needed (Hours per Day):</label>
-        <input type="number" id="battery_life_needed" name="battery_life_needed" required>
-        <label for="software performance">Required Software performance: (1-10)</label>
-        <input type="number" id="software_performance" name="software_performance" required>
-        <!-- <label for="rating">required rating(1-10):</label>
-        <input type="number" id="rating" name="rating" required> -->
-        <br><br>
-
-        <button type="submit">Submit</button>
-    </form>
-
+    
+    
+    <div id="compare-container"></div>
+    
     <div id="result-container">
-        <h2>Recommended Device</h2>
-        <p id="recommended-device"></p>
-        <h3>Battery Life Comparison</h3>
-        <img id="battery-plot" src="" alt="Battery Life Comparison" style="display:none;">
-        <h3>Software Performance Comparison</h3>
-        <img id="software-plot" src="" alt="Software Performance Comparison" style="display:none;">
+
     </div>
 
-
-    <div id="compare-container"></div>
-    <button onclick="clearCompareList()">Clear Comparison List</button>
-
     <script>
-        // Retrieve the compareList from localStorage
+        
         const compareList = JSON.parse(localStorage.getItem('compareList')) || [];
+        console.log("Compare List Retrieved from localStorage:", compareList); // Debuggings
+        async function fetchProductData() {
+            console.log("Fetching product data...");
+            const response = await fetch('products.csv');
+            const data = await response.text();
+            console.log("Product data fetched successfully.");
+            
+            const rows = data.split('\n').map(row => row.split(','));
+            const headers = rows[0];
+            
+            const products = rows.slice(1).map(row => {
+                let obj = {};
+                headers.forEach((header, index) => {
+                    obj[header.trim()] = row[index] ? row[index].trim() : '';
+                });
+                return obj;
+            });
+            
+            console.log("Processed product data:", products);
+            return products;
+        }
+
+        async function generateComparisonGraph() {
+            console.log("Generating comparison graph...");
+            const products = await fetchProductData();
+            console.log("Compare list from localStorage:", compareList);
+            console.log("Compare list from csv:", products);
+            
+            const comparedProducts = compareList.map(product => {
+                const productTitle = product.title ? product.title.trim().toLowerCase() : "";  // Extract title safely
+                const matchedProduct = products.find(p => p.name.trim().toLowerCase() === productTitle);
+                
+                if (!matchedProduct) {
+                    console.warn(`Product not found in dataset: ${productTitle}`);
+                }
+                
+                return matchedProduct;
+            }).filter(product => product);
+
+
+            
+            console.log("Filtered compared products:", comparedProducts);
+            
+            if (comparedProducts.length === 0) {
+                document.getElementById('result-container').innerHTML = '<p>No matching products found in dataset.</p>';
+                return;
+            }
+
+            const labels = comparedProducts.map(p => p.name);
+            const features = ['Battery (mAh)', 'Software (Snapdragon Version)', 'Android Version', 'Screen (Hz)', 'Camera (MP)'];
+            console.log("Features to compare:", features);
+            
+            const datasets = features.map((feature, index) => ({
+                label: feature,
+                data: comparedProducts.map(p => parseFloat(p[feature]) || 0),
+                backgroundColor: `hsl(${index * 60}, 70%, 50%)`
+            }));
+
+            console.log("Prepared datasets for graph:", datasets);
+            //graph is made here
+            const ctx = document.createElement('canvas');
+            ctx.width = 1000;  
+            ctx.height = 400; 
+
+            document.getElementById('result-container').innerHTML = '';
+            document.getElementById('result-container').appendChild(ctx);
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: { labels, datasets },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: true, 
+                    scales: { 
+                        y: { beginAtZero: true } 
+                    }
+                }
+            });
+
+        }
+
+
+        document.addEventListener('DOMContentLoaded', generateComparisonGraph);
+
         const compareContainer = document.getElementById('compare-container');
+        console.log("Compare container initialized.");
 
         // Function to display products in the compare container
         function displayComparedProducts() {
+            console.log("Displaying compared products:", compareList);
+            
             if (compareList.length === 0) {
                 compareContainer.innerHTML = '<p>No products selected for comparison.</p>';
                 return;
             }
             compareList.forEach(product => {
+                
                 const productDiv = document.createElement('div');
                 productDiv.className = 'compared-product';
                 productDiv.innerHTML = `
@@ -174,67 +244,25 @@
                 `;
                 compareContainer.appendChild(productDiv);
             });
+            console.log("All compared products displayed.");
         }
 
         // Function to clear the compare list
         function clearCompareList() {
+            console.log("Clearing compare list...");
             // Clear the compareList from localStorage
             localStorage.removeItem('compareList');
+            console.log("Compare List Cleared from localStorage.");
             // Clear the displayed products in the compare container
             compareContainer.innerHTML = '<p>No products selected for comparison.</p>';
+            console.log("Compare container cleared.");
         }
 
         // Display the products when the page loads
         displayComparedProducts();
+        console.log("Script execution completed.");
 
-        const form = document.getElementById('recommendation-form');
-        const resultContainer = document.getElementById('result-container');
-        const recommendedDeviceElement = document.getElementById('recommended-device');
-        const batteryPlot = document.getElementById('battery-plot');
-
-        form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent page reload
-
-            const formData = {
-                device_type: document.getElementById('device_type').value,
-                // usage_tenure: document.getElementById('usage_tenure').value,
-                battery_life_needed: document.getElementById('battery_life_needed').value,
-                // rating: document.getElementById('rating').value,
-                software_performance: document.getElementById('battery_life_needed').value,
-                compare_list: compareList // Include compare list in the request
-            };
-
-            console.log('Form Data:', formData); // Debug information
-
-            // Send the form data to the backend via AJAX
-            fetch('http://127.0.0.1:5000/recommend', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
-
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Display the recommended device
-                document.getElementById('recommended-device').textContent =
-                    `Recommended: ${data.recommended_device.Device} Device as Predicted battery is more closer to the input`;
-
-                document.getElementById('battery-plot').src = `/${data.battery_plot_path}`;
-                document.getElementById('battery-plot').style.display = 'block';
-
-                document.getElementById('software-plot').src = `/${data.software_plot_path}`;
-                document.getElementById('software-plot').style.display = 'block';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                recommendedDeviceElement.innerHTML = 'An error occurred while fetching the recommendation.';
-            });
-        });
     </script>
+    
 </body>
 </html>

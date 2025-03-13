@@ -198,51 +198,53 @@
 
         <button class="back-button" onclick="window.location.href='index.html'">Go to Home</button>
     </div>
-
     <script>
         // Toggle price range visibility
         function togglePriceRange() {
             const priceRangeDiv = document.querySelector('.price-range-checkboxes');
             priceRangeDiv.style.display = priceRangeDiv.style.display === 'none' ? 'block' : 'none';
         }
-
+    
         // Event listeners for input changes
         document.getElementById('productType').addEventListener('change', getRecommendations);
         document.getElementById('brand').addEventListener('input', getRecommendations);
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', getRecommendations);
         });
-
+    
         async function getRecommendations() {
             const productType = document.getElementById('productType').value.toLowerCase();
             const brand = document.getElementById('brand').value.toLowerCase();
             const priceRanges = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
-
+    
             const recommendationsDiv = document.getElementById('recommendations');
             recommendationsDiv.innerHTML = ''; // Clear previous recommendations
-
+    
             try {
                 const response = await fetch('products.csv');
                 if (!response.ok) {
                     throw new Error('Network response was not ok: ' + response.statusText);
                 }
-
+    
                 const csvText = await response.text();
+                console.log("Fetched CSV Data:", csvText); // Log raw CSV data
+    
                 const products = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
-
+                console.log("Parsed Products Data:", products); // Log parsed data
+    
                 let recommendations = products.filter(item => {
                     let matches = true;
-
+    
                     if (item.sub_category) {
                         matches = item.sub_category.toLowerCase() === productType;
                     } else {
                         matches = false;
                     }
-
+    
                     if (brand) {
                         matches = matches && item.name.toLowerCase().includes(brand);
                     }
-
+    
                     if (priceRanges.length > 0) {
                         const discountPrice = parseInt(item.discount_price.replace(/[₹,]/g, ''), 10);
                         matches = matches && priceRanges.some(range => {
@@ -253,25 +255,29 @@
                             return false;
                         });
                     }
-
+    
                     return matches;
                 });
-
+    
+                console.log("Filtered Recommendations:", recommendations); // Log matched recommendations
+    
                 if (recommendations.length > 0) {
                     recommendations.forEach(item => {
                         const div = document.createElement('div');
                         div.className = 'product';
-                        div.innerHTML = `<div class="product-name">${item.name}</div><div class="product-price">Discount Price: $${item.discount_price} | Actual Price: ₹${item.actual_price}</div>`;
+                        div.innerHTML = `<div class="product-name">${item.name}</div>
+                                         <div class="product-price">Discount Price: ₹${item.discount_price} | Actual Price: ₹${item.actual_price}</div>`;
                         recommendationsDiv.appendChild(div);
                     });
                 } else {
                     recommendationsDiv.innerHTML = `<p>No recommendations available for your criteria.</p>`;
                 }
             } catch (error) {
-                console.error('Error fetching or processing CSV:', error);
+                console.error('Error fetching or processing CSV:', error); // Log error details
                 recommendationsDiv.innerHTML = `<p>Error fetching recommendations. Please try again later.</p>`;
             }
         }
     </script>
+    
 </body>
 </html>
