@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import db_helper
-import generic_helper as generic_helper
+import generic_helper
 import logging
 
 # Set up FastAPI app
@@ -144,7 +144,7 @@ def save_to_db(order: dict):
     return next_order_id
 
 
-# if __name__ == "__main__":
-#     import uvicorn
+if __name__ == "__main__":
+    import uvicorn
 
-#     uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
