@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import db_helper
-import Chatbot.api.generic_helper as generic_helper
+import generic_helper as generic_helper
 import logging
 
 # Set up FastAPI app
