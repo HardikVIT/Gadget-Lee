@@ -144,7 +144,4 @@ def save_to_db(order: dict):
     return next_order_id
 
 
-if __name__ == "__main__":
-    import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=8000)
